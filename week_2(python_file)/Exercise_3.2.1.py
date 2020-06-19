@@ -21,7 +21,7 @@
 # Questions: What are the first ten 3-shingles in the first sentence of section 3.2?
 
 
-# In[17]:
+# In[8]:
 
 
 # Solution:
@@ -34,11 +34,11 @@ k = 3
 def main():
     # try block for execution
     try:
-        # Printing testing sentence
-        print(testing_sentence)
-        # printing first ten singhles from the given sentence.
-        print("First ten 3-shingles in testing_sentence:" + str([testing_sentence[x:x + k] for x in range(0,10)]))
-        # catching the exception 
+        # printing given text
+        print('Given sentence == ', testing_sentence, '\n')
+        # splitting after replacing comma and storing data on cleaned_sentence variable
+        cleaned_sentence = testing_sentence.replace(',', '').split()
+        print("First ten 3-shingles in text ==> " + str([cleaned_sentence[x:x + k] for x in range(0, 10)]))  # Print 3-shingles
     except Exception as exception:
         # printing the exception in nice way.
         print('An exception of type {0} occurred.  Arguments:\n{1!r}'.format(type(exception).__name__, exception.args));  
@@ -46,6 +46,7 @@ def main():
         print("finally block is executed wheather exception is handled or not!!")
 
 if __name__ == '__main__':
+    # calling function from main function
     main()
 
 
