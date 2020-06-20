@@ -15,7 +15,7 @@
 # Reference:http://www.dataminingbook.info/uploads/videos/lecture7/
 
 
-# In[3]:
+# In[6]:
 
 
 import numpy as np
@@ -25,21 +25,35 @@ from scipy.special import gamma
 from math import pi
 # function to calculate radious of hyperSphere 
 # given volume is 1
-list_redious=[]
-def volume(d): 
+list_radius=[]
+# dimensions list
+d=[x for x in range(1,100)]
+def radius(d): 
+    
     for i in d:
         v=1
         r=gamma((i/2+1)**1/i)/pi**0.5*v**1/i
-        list_redious.append(r)
-# dimension of the hypersphere
-d=[x for x in range(1,101)]
-       
-volume(d)
-print(list_redious)
-plt.plot(d,list_redious)
-plt.xlabel("d")
-plt.ylabel("Volume")
-plt.show()
+        list_radius.append(r)
+
+def plot(d,list_radius):
+    plt.plot(d,list_radius)
+    plt.xlabel("d")
+    plt.ylabel("radius")
+    plt.show()
+
+if __name__=='__main__':
+    #calling function inside the try block to catch the errors
+    try:
+        radius(d)
+        plot(d,list_radius)
+    except Exception as exception:
+        print('exception')
+        traceback.print_exc()
+        print('An exception of type {0} occurred.  Arguments:\n{1!r}'.format(type(exception).__name__, exception.args)); 
+    finally:
+        print("Finally block is executed whether exception is handled or not!!")
+    
+         
 
 
 # In[ ]:

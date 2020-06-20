@@ -15,7 +15,7 @@
 # Reference:http://www.dataminingbook.info/uploads/videos/lecture7/
 
 
-# In[2]:
+# In[3]:
 
 
 import numpy as np
@@ -26,25 +26,39 @@ from math import pi
 ## Function to calculate Volume of hyperSphere where radius is 1 due to unit radious.
 # creating empty list for volume
 list_vol=[]
+
+# calculating the volume of the hypersphere with range(1,50) dimensions
+d=[x for x in range(1,50)]  
 def volume(d): 
     for i in d:
         r=1
         # applying formula to calculate volume with unit radius
         vol=(pi**i/2/gamma(i/2+1))*r**i
         list_vol.append(vol)
-# calculating the volume of the hypersphere with range(1,50) dimensions
-d=[x for x in range(1,50)]      
-volume(d)
-print(list_vol)
-# plotting using matplotlib
-plt.plot(d,list_vol)
-plt.xlabel("d")
-plt.ylabel("Volume")
-plt.show()
+
+def plot(d,list_vol):
+    plt.plot(d,list_vol)
+    plt.xlabel("d")
+    plt.ylabel("volume")
+    plt.show()
+
+if __name__=='__main__':
+    #calling function inside the try block to catch the errors
+    try:
+        volume(d)
+        plot(d,list_vol)
+    except Exception as exception:
+        print('exception')
+        traceback.print_exc()
+        print('An exception of type {0} occurred.  Arguments:\n{1!r}'.format(type(exception).__name__, exception.args)); 
+    finally:
+        print("Finally block is executed whether exception is handled or not!!")
+    
+             
 
 
 # In[ ]:
 
 
-# the volume of the hypersphere is increasing with high dimentions and after around dimention 25 it is decreasing to Zero.
+# The volume of the hypersphere is increasing with high dimension and after around dimension 20 it is decreasing to Zero.
 

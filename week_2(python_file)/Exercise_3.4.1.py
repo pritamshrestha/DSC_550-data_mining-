@@ -25,7 +25,7 @@
 # r=5 and b=50
 
 
-# In[54]:
+# In[2]:
 
 
 ### import pandas as pd
@@ -59,36 +59,32 @@ def plot_curve(s_curve_list):
     plt.ylabel("S_Curve_Values")
     plt.title("S_Value Vs S_Curve Plot")
     
-def main():
-    # try block for execution
+
+if __name__ == '__main__':
+     # try block for execution
     try:
         s_curve_1=compute_curve(r1,b1)
-        s_curve_2=compute_curve(r1,b2)
-        s_curve_3=compute_curve(r1,b3)
-        s_curve_4=compute_curve(r2,b1)
-        s_curve_5=compute_curve(r2,b2)
-        s_curve_6=compute_curve(r2,b3)
-        s_curve_7=compute_curve(r3,b1)
-        s_curve_8=compute_curve(r3,b2)
-        s_curve_9=compute_curve(r3,b3)
+        
+        
+        s_curve_2=compute_curve(r2,b2)
+        
+        s_curve_3=compute_curve(r3,b3)
         # plotting curve with different s_curve values
         plot_curve(s_curve_1)
+       
         plot_curve(s_curve_2)
+       
         plot_curve(s_curve_3)
-        plot_curve(s_curve_4)
-        plot_curve(s_curve_5)
-        plot_curve(s_curve_6)
-        plot_curve(s_curve_7)
-        plot_curve(s_curve_8)
-        plot_curve(s_curve_9)
        
     # exception block to catch any exceptions during execution
     except Exception as exception:
         print('exception')
-        print('An exception of type {0} occurred.  Arguments:\n{1!r}'.format(type(exception).__name__, exception.args));    
+        print('An exception of type {0} occurred.  Arguments:\n{1!r}'.format(type(exception).__name__, exception.args)); 
+    finally:
+        print("Finally, the block is executed whether an exception is handled or not!!")    
 
-if __name__ == '__main__':
-    main()
+
+    
 
 
 # In[55]:

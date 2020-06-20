@@ -15,7 +15,7 @@
 # Reference:https:http://www.dataminingbook.info/uploads/videos/lecture4/
 
 
-# In[31]:
+# In[2]:
 
 
 import numpy as np
