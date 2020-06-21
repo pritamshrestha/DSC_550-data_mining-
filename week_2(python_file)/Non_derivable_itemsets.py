@@ -14,131 +14,127 @@
 # Assignment No:2
 
 
-# In[15]:
+# In[17]:
 
 
-# Import important libraries
 import pandas as pd
-from itertools import chain, combinations
+from itertools import combinations
 
-# creating constructer
-class Main_data:
-    def __init__(self):
-        self.item_set = []
-        self.list_set = []
-        # self.st = set()
-        self.item_set_df = pd.DataFrame(columns=['set_list', 'support_list'])
-        self.list_set_df = pd.DataFrame(columns=['set_list'])
-# reading file and converting into dataframe
-    def read_first_text(self, filename):
-        with open(filename, 'r') as f:
-            for line in f:
-                line = line.rstrip('\n').split(' - ')
-                self.item_set.append({'set_list': line[0], 'support_list': line[1]})
-        item_set_df = pd.DataFrame(self.item_set)
-        item_set_df['set_list'] = item_set_df['set_list'].apply(lambda p: set(p))
-        return item_set_df
+# creating function to pass arguments
+def calculate_combinations(itemset, num_combinations):
+    # creating list 
+    list_of_combination = []
+    # loop through itemset
+    for comb in combinations(itemset, num_combinations):
+        # appending in empty list
+        list_of_combination.append(comb)
+    return list_of_combination
 
-    def read_second_text(self, filename):
-        with open(filename, 'r') as f:
-            for line in f:
-                self.st = set()
-                line = line.rstrip('\n').split(' ')
-                for element in line:
-                    self.st.add(int(element))
-                self.list_set.append({'set_list': self.st})
-        list_set_df = pd.DataFrame(self.list_set)
-        return list_set_df
-
-
-class Check_Non_Derivable:
-
-    @staticmethod
-    def powerset(s):
-        l = list(s)
-        return chain.from_iterable(combinations(l, r) for r in range(len(l) + 1))
-
-    def get_support(self, file1, sst):
-        for row in file1.itertuples():
-            rw = row[0]
-            #if sst == row[0]:
-            #    return row[1]
-            #else:
-            #    continue
-               #    return sst # row['support']
-
-        return type(row[0])
-
-    def cal_bound(self, main_set, subs, file1):
-        """
-        :param main_set: Primary set from ndi.txt
-        :param subs:  Subset of primary set
-        :param pwr_set: List of all subsets of primary set
-        :param file1: itemsets txt file for support
-        :return:
-        """
-        bound = 0
-        supp_st = 0
-        pwr_set1 = self.powerset(main_set)
-        for st in pwr_set1:
-            sst = set(st)
-            #print(sst)
-            if subs.issubset(sst) and len(sst) < len(main_set):
-                coef = pow(-1, ((len(main_set) - len(st)) + 1))
-                get = self.get_support(file1, sst)
-                supp_st += 10
-                #supp_st += coef * 10
-                # print(coef, subs)
-                print(get)
-        return supp_st
-
-    def evaluate_support_and_bound(self, file1, file2):
-        for index, row in file2.iterrows():
-            main_set = row['set_list']
-            pwr_set = self.powerset(main_set)
-            for sub in pwr_set:
-                subs = set(sub)
-                len_diff = len(main_set) - len(subs)
-                #sup_st = file1['support'][if (file1['sets'] < subs): False;].values
-                #print(sup_st)
-                # print(len(main_set), len(subs), len(main_set) - len(subs), subs)
-                if len(subs) == 0:
-                    continue
-                if len_diff == 0:
-                    continue
-                    #checking even number
-                elif (len_diff % 2) == 0: 
-                    # for Lower Bound
-                    lbound = self.cal_bound(main_set, subs, file1)
-                    print('Lower_bound', lbound)
-                else: 
-                    # for odd number
-                    # for Upper Bound
-                    ubound = self.cal_bound(main_set, subs, file1)
-                    print('Upper_bound', ubound)
-        return
-
-if __name__ == '__main__':
-
-    try:
-        file1 = 'itemsets.txt'
-        file2 = 'ndi.txt'
-
-        data = Main_data()
-        item_set_df = data.read_first_text(file1)
-        list_set_df = data.read_second_text(file2)
-        print(list_set_df)
-        print(item_set_df.head())
+# function to calculate the bound value
+def calc_value(st, itemset, dictionary, n):
     
-
-       #calling class and function
-        Check_Non_Derivable()
-        Check_Non_Derivable().evaluate_support_and_bound(item_set_df, list_set_df)
+    # build subsets based on combinations
+    value = 0.0
+    for num in range(n-1, 0, -1):
+        # build list of combinations
+        subsets = calculate_combinations(itemset, num)
+        # looping through combinations list
+        for comb in subsets:
+            # get all items in combination based on items in itemset
+            ck = all(item in comb for item in st)
+            # increment value by i
+            if ck or st == ():
+                i = int(dictionary[comb]) * pow(-1.0, (n+1) - num)
+                value += i
+    # if combination set is empty, update dictionary values
+    if st == ():
+        empty = 0
+        for dict_value in dictionary.values():
+            empty += int(dict_value)
+        value += empty * pow(-1.0, (n+1))
         
+    # returning value
+    return value
+
+# function to obtain upper and lower bounds 
+def evaluate_bounds(itemset, dictionary):
+    # set variables to obtain and determin upper and lower bound per itemset
+    upper_bounds = []
+    lower_bounds = []
+    lower_bound = 0
+    upper_bound = 0
+    n = len(itemset)
+    
+    # loop through itemset and break down the combinations into subsets
+    for index in range(len(itemset)):
+        subsets = calculate_combinations(itemset, index)
+        # checking odd or even 
+        boolean_Odd = (n - len(subsets[0]))%2
+        for comb in subsets:
+            # if the length is odd, update upper bound list
+            if boolean_Odd:
+                upper_bounds.append(calc_value(comb, itemset, dictionary, n))
+            # if length is even, update lower bound list
+            else:
+                lower_bounds.append(calc_value(comb, itemset, dictionary, n))
+                
+    # if the maximum number in the lower bound list is less than zero, set lower bound to zero
+    if max(lower_bounds) < 0:
+        lower_bound = 0
+    # if maxium number is 0 or greater, set lower bound to that number
+    else:
+        lower_bound = max(lower_bounds)
+    
+    # set upper bound to the minumum number within the upper bound list
+    upper_bound = min(upper_bounds)
+    
+    # applying condition for upper and lower bound
+    if lower_bound == upper_bound:
+        bound = 'This Itemset is derivable'
+    else:
+        bound = 'This Itemset is non-derivable'
+    
+    # returning valuse using format function
+    return '{}: [{}, {}] {}'.format(itemset, lower_bound, upper_bound, bound)
+    
+# main function for exercise three
+def main():
+    
+        # reading data as dataframe
+    itemset_df = pd.read_csv('itemsets.txt', header = None)
+    ndi_df = pd.read_csv('ndi.txt', header = None)
+        
+        # converting itemsets to dictionary
+    itemset_dict = {}
+    for i, itemset_support in enumerate(itemset_df[0]):
+        set_support_list = [] 
+        # splitting
+        for val in itemset_support.split(' '):
+            # passing hypen condition
+            if val == '-': 
+                continue
+            else:
+                set_support_list.append(val)
+        itemset_dict[tuple(set_support_list[:-1])] = set_support_list[-1]
+        # processing ndi datasets
+    ndi_dict = {}
+        # iterating over ndi
+    for i, itemset in enumerate(ndi_df[0]):
+        ndi_dict[i] = itemset.split(' ')
+    for itemset in ndi_dict.values():
+        #printing values
+        print(evaluate_bounds(itemset, itemset_dict))
+        
+   
+if __name__=='__main__':
+    # calling function inside try blck to catch the eror
+    try:
+        main()
     except Exception as exception:
         print('exception')
         traceback.print_exc()
         print('An exception of type {0} occurred.  Arguments:\n{1!r}'.format(type(exception).__name__, exception.args)); 
     finally:
-        print("Finally, the block is executed whether an exception is handled or not!!")
+        print("finally block is executed whether exception is handled or not!!")
+    
 
